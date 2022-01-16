@@ -11,3 +11,4 @@ seaborn==0.11.2
 tensorboard==2.7.0
 mypy==0.930
 simpleitk==2.1.1
+scikit-image==0.19.1
