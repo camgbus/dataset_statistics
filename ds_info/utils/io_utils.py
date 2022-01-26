@@ -47,4 +47,4 @@ def get_arrays_from_img_label(img, label, img_mode=None):
     if img_mode is not None:
         img_np = img_np[img_mode]
     label_np = sitk.GetArrayFromImage(label)
-    return img_np, label_np
+    return img_np, label_np.astype(int)
