@@ -30,7 +30,7 @@ def main():
     parser.add_argument("task")
     parser.add_argument("save_path")
     args = parser.parse_args()
-    dataset_path = os.path.join(os.environ['nnUNet_raw_data_base'], 'nnUNet_raw_data', args.task, 'imagesTr')
+    dataset_path = os.path.join(os.environ['nnUNet_raw_data_base'], 'nnUNet_raw_data', args.task)
     save_df_path = args.save_path
     save_ds_stats(dataset_path, save_df_path, ds_name='HipSubset', img_mode=None, case_names=None)
 
