@@ -43,6 +43,25 @@ def some_features(dataset_path, file_name, img_mode=0):
         props[str(label)+'_CC_area-rel-{}'.format(label)] = relative_area(largest_map, 1, vals_b=[1], array_b=label_map)
     return props
 
+def reduced_features(dataset_path, file_name, img_mode=0):
+    # Fetch data
+    x_sitk, y_sitk = get_img_label(dataset_path, file_name)
+    x, y = get_arrays_from_img_label(x_sitk, y_sitk, img_mode=img_mode)
+    props = OrderedDict()
+    # Image properties
+    props['intensity_mean'], _ = intensity_mean_median(x)
+    props['resolution'] = resolution(x)
+    props['spacing'] = voxel_spacing(x_sitk)
+    # Properties for each label
+    label_maps = divide_label_maps(y)
+    for label, label_map in label_maps.items():
+        # Add relative area
+        props[str(label)+'_area-rel'] = relative_area(label_map, 1)
+        # Properties for the largest connected component of each label
+        labeled_image, nr_components = connected_components(label_map, connectivity=2)
+        props[str(label)+'_CC'] = nr_components
+    return props
+
 def props_mean_std(props, round=2):
     ordered_vals = OrderedDict()
     for subject_props in props.values():
