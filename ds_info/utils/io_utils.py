@@ -28,6 +28,9 @@ def get_img_label(dataset_path, file_name):
     (SimpleITK.SimpleITK.Image, SimpleITK.SimpleITK.Image): image and label map
     """
     img_path = os.path.join(dataset_path, 'imagesTr', file_name)
+    # Remove the mode, e.g. _0000, _0001
+    for possible_mode in range(5):
+        file_name = file_name.replace('_000{}.nii'.format(possible_mode), '.nii')
     label_path = os.path.join(dataset_path, 'labelsTr', file_name)
     return sitk.ReadImage(img_path), sitk.ReadImage(label_path)
 

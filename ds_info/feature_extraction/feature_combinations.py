@@ -1,11 +1,8 @@
-
-
-from pandas import array
+import numpy as np
 from ds_info.utils.io_utils import get_img_label, get_arrays_from_img_label
 from ds_info.feature_extraction.img_features import resolution, voxel_spacing, intensity_mean_median
 from ds_info.feature_extraction.label_features import skimg_props, connected_components, relative_area, relative_bounding_boxes
 from ds_info.utils.label_utils import divide_label_maps
-import numpy as np
 import warnings
 from collections import OrderedDict
 import numbers
