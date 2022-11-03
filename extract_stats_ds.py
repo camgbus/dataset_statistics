@@ -1,3 +1,5 @@
+#   Extract statistics of a dataset with the MSD format.
+
 import os, argparse
 from ds_info.utils.io_utils import list_files
 from ds_info.utils.format_utils import zeros_in_format
