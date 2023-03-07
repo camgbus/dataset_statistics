@@ -1,3 +1,5 @@
+#   Cluster subjects within MSD ds. More specifically, create a cluster file.
+
 import os
 import numpy as np
 import torch
@@ -83,14 +85,37 @@ def plot_clustering(root_path, clustering=None, clustering_name=None):
         clustering = pkl_load(name=clustering_name, path=root_path)
     plot_clusters(clustering['X'], clustering['labels'], file_path=root_path, file_name=clustering_name)
 
+def print_cluster_statistics(clustering_name, nr_clusters):
+    clustering = pkl_load(name=clustering_name, path=root_path)
+    # How far away is each cluster to the rest of the other clusters?
+    X, labels, explained_variance_ratio = clustering['X'], clustering['labels'], clustering['explained_variance_ratio']
+    print('Explained variance ratio: {}'.format(explained_variance_ratio))
+    for cluster_ix in range(nr_clusters):
+        in_cluster = [x for cl_ix, x in zip(labels, X) if cl_ix==cluster_ix]
+        outside_cluster = [x for cl_ix, x in zip(labels, X) if cl_ix!=cluster_ix]
+        print('Cluster {} inside {} outside {}'.format(cluster_ix, len(in_cluster), len(outside_cluster)))
+        in_mean = np.mean([x[0] for x in in_cluster])
+        out_mean = np.mean([x[0] for x in outside_cluster])
+        distance_in_in = np.mean([abs(x[0] - in_mean) for x in in_cluster])
+        distance_in_out = np.mean([abs(x[0] - out_mean) for x in in_cluster])
+        distance_out_out = np.mean([abs(x[0] - out_mean) for x in outside_cluster])
+        distance_out_in = np.mean([abs(x[0] - in_mean) for x in outside_cluster])
+        print('Distance IN-IN {} IN-OUT {} OUT-OUT {} OUT-IN {}'.format(distance_in_in, distance_in_out, distance_out_out, distance_out_in))
+
 # Obtained with min_dims_dataset
 roi_sizes = {'Task001_BrainTumour': (155, 240, 240), 'Task006_Lung': (112, 512, 512), 'Task007_Pancreas': (37, 512, 512), 'Task008_HepaticVessel': (24, 512, 512), 'Task010_Colon': (37, 512, 512)}
 
 root_path = os.path.join(os.environ['IPMI23'], 'clusters')
-task_name = 'Task001_BrainTumour'
+task_name = 'Task010_Colon'
 nr_components = 2
 nr_clusters = 5
 roi_size = roi_sizes[task_name]
 
-clustering_name = save_clustering(root_path, task_name, nr_components, nr_clusters, roi_size)
-plot_clustering(root_path, clustering_name=clustering_name)
+#clustering_name = save_clustering(root_path, task_name, nr_components, nr_clusters, roi_size)
+
+clustering_name = "{}_{}_{}_{}".format(task_name, nr_components, nr_clusters, "-".join([str(x) for x in roi_size]))
+#plot_clustering(root_path, clustering_name=clustering_name)
+
+print(task_name)
+print_cluster_statistics(clustering_name, nr_clusters)
+
